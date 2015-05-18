@@ -1,2 +1,4 @@
-# The_lone_spaceship_ISN
-projet d'ISN Gaetan et Stanislas
+# The_lone_spaceship
+Projet ISN
+BURILLARD Stanislas
+DURON Gaétan
