@@ -83,6 +83,7 @@ class Player(pygame.sprite.Sprite):
                     current_level.object_list.add(bullet)
                     bullet_list.add(bullet)
     def hit(self):
+        
         self.lives -= 1
 
         if self.lives == 2:
@@ -242,15 +243,39 @@ class Mob(pygame.sprite.Sprite):
         if self.comportement == 1:
             self.rect.y += 8
 
+            if random.randint(0, 1000) <= 5:
+                
+                bullet = Bullet_mob(1)
+                bullet.rect.x = self.rect.centerx - 2
+                bullet.rect.y = self.rect.centery 
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
+
         elif self.comportement == 2:
             self.rect.y += 2
 
             self.rect.x += 10 * math.sin(self.rect.y / 20) + 0.5
 
+            if random.randint(0, 1000) <= 10:
+                
+                bullet = Bullet_mob(1)
+                bullet.rect.x = self.rect.centerx - 2
+                bullet.rect.y = self.rect.centery 
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
+
         elif self.comportement == 3:
             self.rect.y += 2
 
             self.rect.x += 60 * math.sin(self.rect.y / 20) + 0.5
+
+            if random.randint(0, 1000) <= 20:
+                
+                bullet = Bullet_mob(1)
+                bullet.rect.x = self.rect.centerx - 2
+                bullet.rect.y = self.rect.centery 
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
 
         elif self.comportement == 4:
             self.rect.y += 2
@@ -259,11 +284,79 @@ class Mob(pygame.sprite.Sprite):
             else:
                 self.rect.x -= 8
 
+            if rdm_nbr <= 1:
+                
+                bullet = Bullet_mob(2)
+                bullet.rect.y = self.rect.centery
+                bullet.rect.x = self.rect.centerx
+ 
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
+
+            if rdm_nbr == 99:
+                
+                bullet = Bullet_mob(3)
+                bullet.rect.y = self.rect.centery
+                bullet.rect.x = self.rect.centerx
+ 
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
+
+
         elif self.comportement == 5:
             self.rect.y +=2
 
+            if random.randint(0, 1000) <= 20:
+                
+                bullet = Bullet_mob(1)
+                bullet.rect.x = self.rect.centerx - 30
+                bullet.rect.y = self.rect.centery 
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
+
+                bullet = Bullet_mob(1)
+                bullet.rect.x = self.rect.centerx + 30
+                bullet.rect.y = self.rect.centery 
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
+
         elif self.comportement == 6:
-            self.rect.y +=1
+            if self.rect.y <= 100:
+                self.rect.y +=1
+
+            if random.randint(0, 1000) <= 20:
+
+                bullet = Bullet_mob(1)
+                bullet.rect.x = self.rect.centerx - 50
+                bullet.rect.y = self.rect.centery
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
+                bullet = Bullet_mob(1)
+                bullet.rect.x = self.rect.centerx + 50
+                bullet.rect.y = self.rect.centery
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
+
+            if random.randint(0, 1000) <= 10:
+
+                bullet = Bullet_mob(4)
+                bullet.rect.x = self.rect.centerx -25
+                bullet.rect.y = self.rect.centery
+                current_level.object_list.add(bullet)
+
+            if random.randint(0, 1000) <= 30:
+
+                bullet = Bullet_mob(2)
+                bullet.rect.x = self.rect.centerx - 40
+                bullet.rect.y = self.rect.centery
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
+                bullet = Bullet_mob(3)
+                bullet.rect.x = self.rect.centerx + 40
+                bullet.rect.y = self.rect.centery
+                current_level.object_list.add(bullet)
+                bullet_list.add(bullet)
+
 
 
     def collide(self, player):
@@ -281,6 +374,7 @@ class Bullet(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
+
 
         self.image = pygame.Surface([5, 35])
         self.image.fill(yellow)
@@ -310,6 +404,51 @@ class Bullet(pygame.sprite.Sprite):
             current_level.object_list.remove(bullet)
             current_level.score += 1
             #print("score = ", current_level.score)
+
+class Bullet_mob(pygame.sprite.Sprite):
+
+    def __init__(self, categorie):
+        super().__init__()
+
+        if categorie == 4:
+            self.image = pygame.Surface([40, 80])
+        else:           
+           self.image = pygame.Surface([5, 35])
+        self.image.fill(red)
+        self.categorie = categorie
+        self.rect = self.image.get_rect()
+        self.sound = pygame.mixer.Sound("bulletsound.ogg")
+        self.sound.set_volume(0.2)
+        self.sound.play()
+
+    def update(self, rdm_nbr):
+        if self.categorie == 1:
+            self.rect.y += 20
+
+        if self.categorie == 2:
+            self.rect.y += 10
+            self.rect.x += 8
+
+        if self.categorie == 3:
+            self.rect.y += 10
+            self.rect.x -= 8
+
+        if self.categorie == 4:
+            self.rect.y += 20
+
+    def action(self):
+        if self.rect.y > window_height:
+            bullet_list.remove(self)
+            current_level.object_list.remove(self)
+            #print("clear")
+
+        if pygame.sprite.collide_rect(self, player) == True:
+            
+            self.sound = pygame.mixer.Sound("explosion.ogg")
+            self.sound.play()
+            player.hit()
+            bullet_list.remove(self)
+            current_level.object_list.remove(self)
 
 class Icon(pygame.sprite.Sprite):
 
@@ -496,5 +635,6 @@ if ( __name__ == "__main__" ):
             # Update the screen
             pygame.display.flip()
             pygame.display.update()
- 
+
+                    
         pygame.quit()
