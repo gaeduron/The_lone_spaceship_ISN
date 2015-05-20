@@ -5,7 +5,12 @@
 Created on Wed Apr 22 12:36:06 2015
 
 @author: kabiraduron
-"""
+
+Touches : Espace    /pour tirer
+          La souris /pour déplacer le vaisseau
+          Esc       /pour quitter la partie
+
+""" 
 
 import pygame
 import random
