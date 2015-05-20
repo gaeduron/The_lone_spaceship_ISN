@@ -33,12 +33,19 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
 
         super(Player, self).__init__()
+        
         self.image = pygame.image.load('ship3.png').convert()
-        self.explosion = pygame.image.load('expL.png') 
+        self.explosion = pygame.image.load('expL.png').convert()
+        self.hit_1 = pygame.image.load('ship3_hit1.png').convert()
+        self.hit_2 = pygame.image.load('ship3_hit2.png').convert()
+        
         transp = self.image.get_at((0,0))
         self.explosion.set_colorkey(transp)
+        self.hit_1.set_colorkey(transp)
+        self.hit_2.set_colorkey(transp)
         self.image.set_colorkey(transp)
         self.rect = self.image.get_rect()
+        
         self.origin_x = self.rect.centerx
         self.origin_y = self.rect.centery
         self.pos = (self.rect.x)
@@ -77,9 +84,16 @@ class Player(pygame.sprite.Sprite):
                     bullet_list.add(bullet)
     def hit(self):
         self.lives -= 1
-        
-        if self.lives == 0:
+
+        if self.lives == 2:
+            self.image = self.hit_1
+
+        elif self.lives == 1:
+            self.image = self.hit_2
+
+        elif self.lives == 0:
            self.image = self.explosion
+
 
 
 class Mob(pygame.sprite.Sprite):
@@ -254,6 +268,8 @@ class Mob(pygame.sprite.Sprite):
 
     def collide(self, player):
         if pygame.sprite.collide_rect(self, player) == True:
+            self.sound = pygame.mixer.Sound("explosion.ogg")
+            self.sound.play()
             self.death()
             player.hit()
             
@@ -295,6 +311,33 @@ class Bullet(pygame.sprite.Sprite):
             current_level.score += 1
             #print("score = ", current_level.score)
 
+class Icon(pygame.sprite.Sprite):
+
+    def __init__(self):
+        super(Icon, self).__init__()
+        
+        self.image = pygame.image.load('clock.png').convert()
+        transp = self.image.get_at((0,0))
+        self.image.set_colorkey(transp)
+        self.rect = self.image.get_rect()
+        self.rect.x = 1100
+        self.rect.y = 20
+        print("800")
+
+class Icon_2(pygame.sprite.Sprite):
+
+    def __init__(self):
+        super(Icon_2, self).__init__()
+        
+        self.image = pygame.image.load('skull.png').convert()
+        transp = self.image.get_at((0,0))
+        self.image.set_colorkey(transp)
+        self.rect = self.image.get_rect()
+        self.rect.x = 1100
+        self.rect.y = 65
+        print("802")
+
+
         
 class Level(object):
     """
@@ -302,6 +345,7 @@ class Level(object):
 
     """
     def __init__(self, player_object):
+
         self.object_list = pygame.sprite.Group()
         self.player_object = player_object
         self.score = 0
@@ -311,22 +355,54 @@ class Level(object):
         self.sound.play()
         self.font = pygame.font.SysFont("FreeMono", 50)
         self.text = self.font.render(self.score_txt, True, white)
+        self.second = 0
+        self.second_str = str(self.second)
+        self.minute = 0
+        self.minute_str = str(self.minute)
+        self.time_str = self.minute_str + ":" + self.second_str
+        self.time_txt = self.font.render(self.time_str, True, white)
+        self.icon = Icon()
+        self.object_list.add(self.icon)
+        self.icon_2 = Icon_2()
+        self.object_list.add(self.icon_2)
+
+    #def time(self):
+
+        
+
+        
 
     def update( self, rdm_nbr ):
+
         self.object_list.update( rdm_nbr)
+        
         self.score_txt = str(self.score)
-        self.text = self.font.render(self.score_txt, True, white) 
-        print(self.score_txt)
-        #print(mob_list)
+        self.text = self.font.render(self.score_txt, True, white)
+        
+        if self.second >= 60:
+            self.second = 0
+            self.minute += 1
+        else:
+            self.second += 1 / frames_per_second
+
+        self.second_str = str(int(self.second))
+        self.minute_str = str(self.minute)
+        self.time_str = self.minute_str + ":" + self.second_str
+        self.time_txt = self.font.render(self.time_str, True, white)
+
+        #print(self.score_txt)
+        #print(self.time)
         if self.boss_spawn == 1 and len(mob_list) == 0:
              print("!!! YOU WIN !!!")
              print("your score is : ", self.score)
              pygame.quit()
  
     def draw( self, window ):
+
         window.fill( black )
         self.object_list.draw( window )
-        window.blit(self.text, (60 - self.text.get_width() // 2 , 40 - self.text.get_height() // 2 ))
+        window.blit(self.text, (1220 - self.text.get_width() // 2 , 80 - self.text.get_height() // 2 ))
+        window.blit(self.time_txt, (1220 - self.time_txt.get_width() // 2 , 40 - self.time_txt.get_height() // 2 ))
 
     def random(self):
 
@@ -385,7 +461,8 @@ if ( __name__ == "__main__" ):
             for event in pygame.event.get():
                 if ( event.type == pygame.QUIT ) or \
                 ( event.type == pygame.KEYDOWN and \
-                ( event.key == pygame.K_ESCAPE or event.key == pygame.K_q ) ):                    
+                ( event.key == pygame.K_ESCAPE or event.key == pygame.K_q ) ):
+
                     running = False
             # Update
             rdm_nbr = current_level.random()              
