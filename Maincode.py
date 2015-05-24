@@ -1,5 +1,4 @@
 
-
 # -*- coding: utf-8 -*-
 """
 Created on Wed Apr 22 12:36:06 2015
@@ -67,21 +66,22 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, collidable=pygame.sprite.Group(), event=None):
         if self.lives <= 0:
-            print("GAME OVER")
-            print(current_level.score)
-            pygame.quit()
-        pos = pygame.mouse.get_pos()
-        self.rect.x = pos[0] - 40
-        if (event != None):
-            if ( event.type == pygame.KEYDOWN ):
-                if event.key == pygame.K_SPACE:
-                    bullet = Bullet()
-                    #print("pow")
-                    bullet.rect.x = player.rect.centerx - 2
-                    bullet.rect.y = player.rect.centery - 50
- ###               active_object_list.add(bullet)
-                    current_level.object_list.add(bullet)
-                    bullet_list.add(bullet)
+            current_level.win = 2
+            current_level.object_list.remove(self)
+            self.kill()
+        else:
+            pos = pygame.mouse.get_pos()
+            self.rect.x = pos[0] - 40
+            if (event != None):
+                if ( event.type == pygame.KEYDOWN ):
+                    if event.key == pygame.K_SPACE:
+                        bullet = Bullet()
+ 
+                        bullet.rect.x = player.rect.centerx - 2
+                        bullet.rect.y = player.rect.centery - 50
+
+                        current_level.object_list.add(bullet)
+                        bullet_list.add(bullet)
     def hit(self):
         
         self.lives -= 1
@@ -194,7 +194,7 @@ class Mob(pygame.sprite.Sprite):
             self.rect.y = -40
 
         if position == 2:
-            self.rect.x = window_width / 2 + 300
+            self.rect.x = window_width / 2 + 450
             self.rect.y = -50
 
         if position == 3:
@@ -391,11 +391,10 @@ class Bullet(pygame.sprite.Sprite):
         if bullet.rect.y < -10:
             bullet_list.remove(bullet)
             current_level.object_list.remove(bullet)
-            #print("clear")
+
 
         block_hit_list = pygame.sprite.spritecollide(self, mob_list, False)
-       # print(block_hit_list)
-        # For each block hit, remove the bullet and add to the score
+
         for block in block_hit_list:
             self.sound = pygame.mixer.Sound("explosion.ogg")
             self.sound.play()
@@ -403,7 +402,7 @@ class Bullet(pygame.sprite.Sprite):
             bullet_list.remove(bullet)
             current_level.object_list.remove(bullet)
             current_level.score += 1
-            #print("score = ", current_level.score)
+
 
 class Bullet_mob(pygame.sprite.Sprite):
 
@@ -413,7 +412,7 @@ class Bullet_mob(pygame.sprite.Sprite):
         if categorie == 4:
             self.image = pygame.Surface([40, 80])
         else:           
-           self.image = pygame.Surface([5, 35])
+            self.image = pygame.Surface([5, 35])
         self.image.fill(red)
         self.categorie = categorie
         self.rect = self.image.get_rect()
@@ -440,7 +439,7 @@ class Bullet_mob(pygame.sprite.Sprite):
         if self.rect.y > window_height:
             bullet_list.remove(self)
             current_level.object_list.remove(self)
-            #print("clear")
+
 
         if pygame.sprite.collide_rect(self, player) == True:
             
@@ -477,6 +476,36 @@ class Icon_2(pygame.sprite.Sprite):
         print("802")
 
 
+class Star(pygame.sprite.Sprite):
+
+    def __init__(self, rdm_nbr):
+
+        super().__init__()
+        
+        self.image = pygame.Surface([4, 4])
+        self.image.fill(white)
+        self.rect = self.image.get_rect()
+
+        self.rect.x = random.randrange(1280)
+        self.rect.y = -40
+       
+
+    def spawn(rdm_nbr):
+
+        if rdm_nbr <= 50:
+            star = Star(rdm_nbr)
+            star_list.add(star)
+            current_level.object_list.add(star)
+
+
+    def update(self, rdm_nbr):
+
+        self.rect.y += 30
+        if self.rect.y > window_height:
+            star_list.remove(self)
+            current_level.object_list.remove(self)
+
+
         
 class Level(object):
     """
@@ -490,8 +519,10 @@ class Level(object):
         self.score = 0
         self.score_txt = "0"
         self.boss_spawn = 0
+        
         self.sound = pygame.mixer.Sound("ironmaiden.ogg")
         self.sound.play()
+        
         self.font = pygame.font.SysFont("FreeMono", 50)
         self.text = self.font.render(self.score_txt, True, white)
         self.second = 0
@@ -500,13 +531,35 @@ class Level(object):
         self.minute_str = str(self.minute)
         self.time_str = self.minute_str + ":" + self.second_str
         self.time_txt = self.font.render(self.time_str, True, white)
+        
         self.icon = Icon()
         self.object_list.add(self.icon)
         self.icon_2 = Icon_2()
         self.object_list.add(self.icon_2)
+        self.win = 0
+        self.end_time = 0
 
-    #def time(self):
 
+    def win_screen(self):
+        
+        self.end_time = 1
+
+        self.win_txt = "!!! YOU WIN !!!"
+        self.win_text = self.font.render(self.win_txt, True, white)
+
+        self.final_score = str(int((self.score * 1234 ) / (self.minute * 60 + self.second)))
+
+
+        self.win_info = "YOUR SCORE : " + self.final_score
+        self.win_info_text = self.font.render(self.win_info, True, white)
+
+    def death_screen(self):
+        
+        self.end_time = 1
+        self.sound.fadeout(4000)
+
+        self.loser_txt = "GAME OVER"
+        self.loser_text = self.font.render(self.loser_txt, True, white)
         
 
         
@@ -517,24 +570,29 @@ class Level(object):
         
         self.score_txt = str(self.score)
         self.text = self.font.render(self.score_txt, True, white)
+
+        if self.end_time == 0:
         
-        if self.second >= 60:
-            self.second = 0
-            self.minute += 1
-        else:
-            self.second += 1 / frames_per_second
+            if self.second >= 60:
+                self.second = 0
+                self.minute += 1
+            else:
+                self.second += 1 / frames_per_second
 
         self.second_str = str(int(self.second))
         self.minute_str = str(self.minute)
         self.time_str = self.minute_str + ":" + self.second_str
         self.time_txt = self.font.render(self.time_str, True, white)
 
-        #print(self.score_txt)
-        #print(self.time)
         if self.boss_spawn == 1 and len(mob_list) == 0:
-             print("!!! YOU WIN !!!")
-             print("your score is : ", self.score)
-             pygame.quit()
+             self.win = 1
+
+        if self.win == 1:
+            self.win_screen()
+
+        if self.win == 2:
+            self.death_screen()
+             
  
     def draw( self, window ):
 
@@ -542,6 +600,14 @@ class Level(object):
         self.object_list.draw( window )
         window.blit(self.text, (1220 - self.text.get_width() // 2 , 80 - self.text.get_height() // 2 ))
         window.blit(self.time_txt, (1220 - self.time_txt.get_width() // 2 , 40 - self.time_txt.get_height() // 2 ))
+
+        if self.win == 1:           
+            window.blit(self.win_text, (650 - self.win_text.get_width() // 2 , 300 - self.win_text.get_height() // 2 ))
+            window.blit(self.win_info_text, (650 - self.win_info_text.get_width() // 2 , 400 - self.win_info_text.get_height() // 2 ))
+
+        if self.win == 2:           
+            window.blit(self.loser_text, (650 - self.loser_text.get_width() // 2 , 300 - self.loser_text.get_height() // 2 ))
+
 
     def random(self):
 
@@ -571,12 +637,12 @@ if ( __name__ == "__main__" ):
         clock = pygame.time.Clock()
         frames_per_second = 30
 
- ###       active_object_list = pygame.sprite.Group()
+
         bullet_list = pygame.sprite.Group()
         mob_list = pygame.sprite.Group()
+        star_list = pygame.sprite.Group()
         player = Player()
         player.set_position(400, 700)
- ###       active_object_list.add( player )
 
         level_list = []
         level_list.append( Level_01( player ) )
@@ -606,7 +672,7 @@ if ( __name__ == "__main__" ):
             # Update
             rdm_nbr = current_level.random()              
             player.update( current_level.object_list, event )
-                                         ###active_object_list.update()
+
             event = None
             current_level.update(rdm_nbr)
 
@@ -619,15 +685,16 @@ if ( __name__ == "__main__" ):
                 mob.collide(player)
             
             
-            #print(rdm_nbr)
             Mob.spawn(rdm_nbr, current_level.score)
+            Star.spawn(rdm_nbr)
+
+            if current_level.win == 1:
+                current_level.win_screen()
+                
 
             # Draw
 
             current_level.draw(window)
-            
-                                         ###active_object_list.draw(window)
-
             # Framerate
 
             clock.tick( frames_per_second )
@@ -635,6 +702,7 @@ if ( __name__ == "__main__" ):
             # Update the screen
             pygame.display.flip()
             pygame.display.update()
+
 
                     
         pygame.quit()
