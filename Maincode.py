@@ -33,7 +33,7 @@ red = (255, 0, 0)
 
 class Player(pygame.sprite.Sprite):
     """
-    La classe player vas permetre de gerer: _les actions du joueur
+    La classe player va permettre de gérer: _les actions du joueur
                                             _le sprite du joueur
                                             _le statut du joueur
     """
@@ -58,10 +58,10 @@ class Player(pygame.sprite.Sprite):
         self.hit_2.set_colorkey(transp)
         self.image.set_colorkey(transp)
 
-        #On attribu au sprite la taille de l'image rectangle 
+        #On attribue au sprite la taille de l'image rectangle 
         self.rect = self.image.get_rect()
 
-        #On initialise les différentes caractéristique de l'objet
+        #On initialise les différentes caractéristiques de l'objet
         self.origin_x = self.rect.centerx
         self.origin_y = self.rect.centery
         self.pos = (self.rect.x)
@@ -78,13 +78,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y - self.origin_y
 
     def set_level(self, level):
-        """ On join le sprite au niveau """
+        """ On joint le sprite au niveau """
 
         self.level = level
         current_level.object_list.add(self)
 
     def update(self, collidable=pygame.sprite.Group(), event=None):
-        """ On met a jour a chaque tour les caractéristiques de l'objet """
+        """ On met à jour à chaque tour les caractéristiques de l'objet """
 
         #test si le joueur est mort
         if self.lives <= 0:
@@ -93,7 +93,7 @@ class Player(pygame.sprite.Sprite):
             self.kill()
 
         else:
-            #On attribu au sprite la position actuelle de la souris
+            #On attribue au sprite la position actuelle de la souris
             pos = pygame.mouse.get_pos()
             self.rect.x = pos[0] - 40
 
@@ -112,7 +112,7 @@ class Player(pygame.sprite.Sprite):
     def hit(self):
         """ On gère les vies du joueur """
 
-        #Lorsque cette fonction est appeler le joueur perd un vie
+        #Lorsque cette fonction est appelée, le joueur perd une vie
         self.lives -= 1
 
         #On change l'image du sprite en fonction des vies du joueur
@@ -128,22 +128,22 @@ class Player(pygame.sprite.Sprite):
 
 class Mob(pygame.sprite.Sprite):
     """
-    La classe Mob vas gerer les différents enemies: _leurs images
+    La classe Mob va gérer les différents ennemis:  _leurs images
                                                     _leurs mouvements
                                                     _leurs attaques
                                                     _leurs morts
                                                     _leurs sons
                                                     _leurs apparition
 
-    Une particularité de cette objet est que les différents mob on
+    Une particularité de cet objet est que les différents mob ont
     des ordres d'apparition différents et des caractéristiques différentes
 
     """
 
     def __init__(self, rdm_nbr, score):
-        """ Initialisation des caractéristiques de l'enemie
+        """ Initialisation des caractéristiques de l'ennemi
             Variable:
-                - rdm_nbr correspond au nombre alléatoire générer à chaque
+                - rdm_nbr correspond au nombre aléatoire généré à chaque
                 tour. Il servira à déterminer le sprite d'explosion du mob
                 - score est le score du joueur, il permet de changer le
                 type de mob qui apparait en fonction de l'avancement du
@@ -152,7 +152,7 @@ class Mob(pygame.sprite.Sprite):
 
         super().__init__()
 
-        #On vas ici détermier les caractéristiques du mob généré
+        #On va ici déterminer les caractéristiques du mob généré
         self.dead = 0
 
         #premier type de mob
@@ -246,10 +246,10 @@ class Mob(pygame.sprite.Sprite):
         self.image.set_colorkey(transparent)
         self.explosion.set_colorkey(transparent)
 
-        #On attribu au sprite la taille de l'image rectangle
+        #On attribue au sprite la taille de l'image rectangle
         self.rect = self.image.get_rect()
 
-        #On donne sa position au sprite en fonction de sont type
+        #On donne sa position au sprite en fonction de son type
         if position == 1:
             self.rect.x = random.randrange(1280)
             self.rect.y = -40
@@ -263,41 +263,41 @@ class Mob(pygame.sprite.Sprite):
             self.rect.y = -50
 
     def spawn(rdm_nbr, score):
-        """ On appel cette fonction pour gerer l'apparition des enemies
+        """ On appelle cette fonction pour gérer l'apparition des ennemis
             en fonction du rdm_nbr et du score
         """
-        #les mobs n'apparaissent que si le boss n'est pas encore apparue
+        #les mobs n'apparaissent que si le boss n'est pas encore apparu
         if current_level.boss_spawn == 0:
 
-            #En fonction du score on gere la fréquence d'apparition des
-            #enemies
+            #En fonction du score on gère la fréquence d'apparition des
+            #ennemis
             if current_level.score < 80:
                 if rdm_nbr <= 10:
                     mob = Mob(rdm_nbr, score)
-                    #ajout du mob dans des listes pour pouvoir le gerer
+                    #ajout du mob dans des listes pour pouvoir le gérer
                     mob_list.add(mob)
                     current_level.object_list.add(mob)
 
             elif current_level.score < 100:
                 if rdm_nbr <= 3:
                     mob = Mob(rdm_nbr, score)
-                    #ajout du mob dans des listes pour pouvoir le gerer
+                    #ajout du mob dans des listes pour pouvoir le gérer
                     mob_list.add(mob)
                     current_level.object_list.add(mob)
-            #On test les conditions pour faire appaitre le boss
+            #On test les conditions pour faire apparaitre le boss
             elif score >= 100 and len(mob_list) == 0:
                 if rdm_nbr <= 10:
                     mob = Mob(rdm_nbr, score)
-                    #ajout du mob dans des listes pour pouvoir le gerer
+                    #ajout du mob dans des listes pour pouvoir le gérer
                     mob_list.add(mob)
                     current_level.object_list.add(mob)
 
     def death(self):
-        """cette fonction gère les vie de l'enemie"""
+        """cette fonction gère les vie de l'ennemi"""
         if self.lives >= 1:
             self.lives -= 1
 
-        #On gere ici la mort de l'enemie
+        #On gère ici la mort de l'ennemi
         if self.lives == 0:
             self.image = self.explosion
             self.sound = pygame.mixer.Sound("sound/explosion.ogg")
@@ -322,7 +322,7 @@ class Mob(pygame.sprite.Sprite):
         if self.lives <= 0:
             self.death()
 
-        #Action du mob en fonciton de son type
+        #Action du mob en fonction de son type
         if self.comportement == 1:
             self.rect.y += 8
 
@@ -333,7 +333,7 @@ class Mob(pygame.sprite.Sprite):
                 current_level.object_list.add(bullet)
                 bullet_list.add(bullet)
 
-        #Action du mob en fonciton de son type
+        #Action du mob en fonction de son type
         elif self.comportement == 2:
             self.rect.y += 2
             self.rect.x += 10 * math.sin(self.rect.y / 20) + 0.5
@@ -345,7 +345,7 @@ class Mob(pygame.sprite.Sprite):
                 current_level.object_list.add(bullet)
                 bullet_list.add(bullet)
 
-        #Action du mob en fonciton de son type
+        #Action du mob en fonction de son type
         elif self.comportement == 3:
             self.rect.y += 2
             self.rect.x += 60 * math.sin(self.rect.y / 20) + 0.5
@@ -357,7 +357,7 @@ class Mob(pygame.sprite.Sprite):
                 current_level.object_list.add(bullet)
                 bullet_list.add(bullet)
 
-        #Action du mob en fonciton de son type
+        #Action du mob en fonction de son type
         elif self.comportement == 4:
             self.rect.y += 2
 
@@ -381,7 +381,7 @@ class Mob(pygame.sprite.Sprite):
                 current_level.object_list.add(bullet)
                 bullet_list.add(bullet)
 
-        #Action du mob en fonciton de son type
+        #Action du mob en fonction de son type
         elif self.comportement == 5:
             self.rect.y += 2
 
@@ -398,7 +398,7 @@ class Mob(pygame.sprite.Sprite):
                 current_level.object_list.add(bullet)
                 bullet_list.add(bullet)
 
-        #Action du mob en fonciton de son type
+        #Action du mob en fonction de son type
         elif self.comportement == 6:
             if self.rect.y <= 100:
                 self.rect.y += 1
@@ -436,7 +436,7 @@ class Mob(pygame.sprite.Sprite):
                 bullet_list.add(bullet)
 
     def collide(self, player):
-        """ fonction qui test le collisions avec le joueur """
+        """ fonction qui test les collisions avec le joueur """
 
         if pygame.sprite.collide_rect(self, player) == True:
             self.death()
@@ -447,14 +447,14 @@ class Bullet(pygame.sprite.Sprite):
     """ Cette classe gère les balles du joueur """
 
     def __init__(self):
-        """ initialisation des caractéristique de la balle """
+        """ initialisation des caractéristiques de la balle """
         super().__init__()
 
         #image
         self.image = pygame.Surface([5, 35])
         self.image.fill(yellow)
 
-        #On attribu au sprite la taille de l'image rectangle
+        #On attribue au sprite la taille de l'image rectangle
         self.rect = self.image.get_rect()
 
         #On joue le son de la balle créée
@@ -476,7 +476,7 @@ class Bullet(pygame.sprite.Sprite):
             bullet_list.remove(bullet)
             current_level.object_list.remove(bullet)
 
-        #gestion des collisions de la balle avec les enemies
+        #gestion des collisions de la balle avec les ennemis
         block_hit_list = pygame.sprite.spritecollide(self, mob_list, False)
 
         for block in block_hit_list:
@@ -505,7 +505,7 @@ class Bullet_mob(pygame.sprite.Sprite):
 
         
 
-        #On attribu au sprite la taille de l'image rectangle
+        #On attribue au sprite la taille de l'image rectangle
         self.rect = self.image.get_rect()
 
         #On donne à la balle la catégorie correspondant à son tireur 
@@ -585,7 +585,7 @@ class Star(pygame.sprite.Sprite):
     """ Classe qui gère génération d'étoile du background """
 
     def __init__(self, rdm_nbr):
-        """ initialisation des caractéristique de l'étoile"""
+        """ initialisation des caractéristiques de l'étoile"""
 
         super().__init__()
 
@@ -612,7 +612,7 @@ class Star(pygame.sprite.Sprite):
 
         self.rect.y += 30
 
-        #si l'étoile sort de l'écrant elle est éffacée
+        #si l'étoile sort de l'écran, elle est effacée
         if self.rect.y > window_height:
             star_list.remove(self)
             current_level.object_list.remove(self)
@@ -620,20 +620,20 @@ class Star(pygame.sprite.Sprite):
 
 class Level(object):
     """
-    L'objet Level sert gerer:_tout les sprites
-                             _la musique
-                             _le score
-                             _le temps
-                             _le hasard
-                             _les écrants de victoire et défaite
-                             _L'affichage
+    L'objet Level sert à gérer:_tout les sprites
+                               _la musique
+                               _le score
+                               _le temps
+                               _le hasard
+                               _les écrants de victoire et défaite
+                               _L'affichage
     
 
     """
     def __init__(self, player_object):
-        """ initialisation des caractéristique de l'étoile"""
+        """ initialisation des caractéristiques de l'étoile"""
 
-        #fonction qui contien tout les sprite pour
+        #fonction qui contient tous les sprites pour
         #les update et les afficher
         self.object_list = pygame.sprite.Group()
 
@@ -643,12 +643,12 @@ class Level(object):
         self.score = 0
         self.score_txt = "0"
 
-        #Lancement de la music 
+        #Lancement de la musique 
         self.sound = pygame.mixer.Sound("sound/ironmaiden.ogg")
         self.sound.play()
 
-        #initialisation des textes et convertion des score et temps
-        #en text à afficher
+        #initialisation des textes et conversion des scores et temps
+        #en texte à afficher
         self.font = pygame.font.SysFont("FreeMono", 50)
         self.text = self.font.render(self.score_txt, True, white)
         self.second = 0
@@ -672,7 +672,7 @@ class Level(object):
     def win_screen(self):
         """ Fonction qui affiche l'écran de victoire """
 
-        #stop l'horloge
+        #stoppe l'horloge
         self.end_time = 1
 
         #affiche le texte de victoire
@@ -689,10 +689,10 @@ class Level(object):
     def death_screen(self):
         """ Fonction qui affiche l'écran de défaite """
 
-        #stop l'horloge
+        #stoppe l'horloge
         self.end_time = 1
 
-        #stop la musique
+        #stoppe la musique
         self.sound.fadeout(4000)
         
         #affiche le texte de défaite
@@ -702,10 +702,10 @@ class Level(object):
     def update(self, rdm_nbr):
         """ fonction qui met à jour le niveau """
         
-        #met à jour tout les sprites
+        #met à jour tous les sprites
         self.object_list.update(rdm_nbr)
         
-        #met à jour le text du score
+        #met à jour le texte du score
         self.score_txt = str(self.score)
         self.text = self.font.render(self.score_txt, True, white)
 
@@ -723,25 +723,25 @@ class Level(object):
         self.time_str = self.minute_str + ":" + self.second_str
         self.time_txt = self.font.render(self.time_str, True, white)
 
-        #test si le joueur à fini le jeu
+        #test si le joueur a fini le jeu
         if self.boss_spawn == 1 and len(mob_list) == 0:
             self.win = 1
 
-        #si le joueur à gagné on affiche l'écran de victoire
+        #si le joueur a gagné, on affiche l'écran de victoire
         if self.win == 1:
             self.win_screen()
 
-        #si le joueur à perdu on affiche l'écran de défaite
+        #si le joueur a perdu, on affiche l'écran de défaite
         if self.win == 2:
             self.death_screen()
 
     def draw(self, window):
-        """ Fonction qui affiche tout les sprites dans la fenêtre """
+        """ Fonction qui affiche tous les sprites dans la fenêtre """
 
         #On passe la fenêtre en black
         window.fill(black)
 
-        #On dessine tout les sprites
+        #On dessine tous les sprites
         self.object_list.draw(window)
 
         #On affiche le score et le temps
@@ -750,7 +750,7 @@ class Level(object):
         window.blit(self.time_txt, (1220 - self.time_txt.get_width() // 2,
                     40 - self.time_txt.get_height() // 2))
 
-        #On affiche l'écran de victoire si le joueur à gagné
+        #On affiche l'écran de victoire si le joueur a gagné
         if self.win == 1:
             window.blit(self.win_text, (650 - self.win_text.get_width() // 2,
                         300 - self.win_text.get_height() // 2))
@@ -758,7 +758,7 @@ class Level(object):
                         (650 - self.win_info_text.get_width() // 2,
                          400 - self.win_info_text.get_height() // 2))
 
-        #On affiche l'écran de défaite si le joueur à perdu
+        #On affiche l'écran de défaite si le joueur a perdu
         if self.win == 2:
             window.blit(self.loser_text,
                         (650 - self.loser_text.get_width() // 2,
@@ -777,7 +777,7 @@ class Level_01(Level):
     def __init__(self, player_object):
         super(Level_01, self).__init__(player_object)
 """
-  ///  On initialise ici les parametres de notre fenetre
+  ///  On initialise ici les paramètres de notre fenêtre
 
 """
 
@@ -804,11 +804,11 @@ if (__name__ == "__main__"):
         player = Player()
         player.set_position(400, 700)
 
-        #céation d'une liste de niveau et ajout des niveaux
+        #création d'une liste de niveau et ajout des niveaux
         level_list = []
         level_list.append(Level_01(player))
 
-        #On désigne le niveau dans le quelle on se trouve
+        #On désigne le niveau dans lequel on se trouve
         current_level_number = 0
         current_level = level_list[current_level_number]
         
@@ -843,20 +843,20 @@ if (__name__ == "__main__"):
             player.update(current_level.object_list, event)
             event = None
 
-            #update de tout se qui se trouve dans le niveau
+            #update de tout ce qui se trouve dans le niveau
             current_level.update(rdm_nbr)
 
             """ Logic """
 
-            #lance les tests des interractions des balles avec le niveau
+            #lance les tests des intéractions des balles avec le niveau
             for bullet in bullet_list:
                 bullet.action()
 
-            #lance les tests des interractions des mob avec le joueur
+            #lance les tests des intéractions des mobs avec le joueur
             for mob in mob_list:
                 mob.collide(player)
 
-            #lance la génération de mob et d'étoile
+            #lance la génération de mobs et d'étoiles
             Mob.spawn(rdm_nbr, current_level.score)
             Star.spawn(rdm_nbr)
 
