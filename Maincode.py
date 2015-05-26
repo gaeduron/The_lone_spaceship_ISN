@@ -1,9 +1,6 @@
 
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr 22 12:36:06 2015
-
-@author: kabiraduron
 
 Touches : Espace    /pour tirer
           La souris /pour déplacer le vaisseau
@@ -86,7 +83,7 @@ class Player(pygame.sprite.Sprite):
     def update(self, collidable=pygame.sprite.Group(), event=None):
         """ On met à jour à chaque tour les caractéristiques de l'objet """
 
-        #test si le joueur est mort
+        #teste si le joueur est mort
         if self.lives <= 0:
             current_level.win = 2
             current_level.object_list.remove(self)
@@ -97,7 +94,7 @@ class Player(pygame.sprite.Sprite):
             pos = pygame.mouse.get_pos()
             self.rect.x = pos[0] - 40
 
-            #On test si le joueur tire
+            #On teste si le joueur tire
             if (event != None):
                 if (event.type == pygame.KEYDOWN):
                     if event.key == pygame.K_SPACE:
@@ -135,7 +132,7 @@ class Mob(pygame.sprite.Sprite):
                                                     _leurs sons
                                                     _leurs apparition
 
-    Une particularité de cet objet est que les différents mob ont
+    Une particularité de cet objet est que les différents mobs ont
     des ordres d'apparition différents et des caractéristiques différentes
 
     """
@@ -284,7 +281,7 @@ class Mob(pygame.sprite.Sprite):
                     #ajout du mob dans des listes pour pouvoir le gérer
                     mob_list.add(mob)
                     current_level.object_list.add(mob)
-            #On test les conditions pour faire apparaitre le boss
+            #On test les conditions pour faire apparaître le boss
             elif score >= 100 and len(mob_list) == 0:
                 if rdm_nbr <= 10:
                     mob = Mob(rdm_nbr, score)
@@ -293,7 +290,7 @@ class Mob(pygame.sprite.Sprite):
                     current_level.object_list.add(mob)
 
     def death(self):
-        """cette fonction gère les vie de l'ennemi"""
+        """cette fonction gère les vies de l'ennemi"""
         if self.lives >= 1:
             self.lives -= 1
 
@@ -313,7 +310,7 @@ class Mob(pygame.sprite.Sprite):
             current_level.object_list.remove(self)
             
 
-        #test si le mob est sorti de l'écran pour l'effacer
+        #teste si le mob est sorti de l'écran pour l'effacer
         if self.rect.y > 800:
             mob_list.remove(self)
             current_level.object_list.remove(self)
@@ -489,10 +486,10 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Bullet_mob(pygame.sprite.Sprite):
-    """ Cette classe gère les balles des enemies """
+    """ Cette classe gère les balles des ennemis """
 
     def __init__(self, categorie):
-        """ initialisation des caractéristique de la balle """
+        """ initialisation des caractéristiques de la balle """
         super().__init__()
 
         #image en fonction du type de mob qui la tire
@@ -554,7 +551,7 @@ class Bullet_mob(pygame.sprite.Sprite):
 
 
 class Icon(pygame.sprite.Sprite):
-    """Classe qui gère l'affichage de l'icone de l'horloge"""
+    """Classe qui gère l'affichage de l'icône de l'horloge"""
 
     def __init__(self):
         super(Icon, self).__init__()
@@ -723,7 +720,7 @@ class Level(object):
         self.time_str = self.minute_str + ":" + self.second_str
         self.time_txt = self.font.render(self.time_str, True, white)
 
-        #test si le joueur a fini le jeu
+        #teste si le joueur a fini le jeu
         if self.boss_spawn == 1 and len(mob_list) == 0:
             self.win = 1
 
@@ -772,7 +769,7 @@ class Level(object):
 
 
 class Level_01(Level):
-    """ Object fils de Level, c'est le premier niveau """
+    """ Objet fils de Level, c'est le premier niveau """
 
     def __init__(self, player_object):
         super(Level_01, self).__init__(player_object)
@@ -826,7 +823,7 @@ if (__name__ == "__main__"):
 
         while running == True:
 
-            #test si on quitte le jeu
+            #teste si on quitte le jeu
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT) or \
                 (event.type == pygame.KEYDOWN and \
