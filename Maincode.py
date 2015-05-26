@@ -622,7 +622,7 @@ class Level(object):
                                _le score
                                _le temps
                                _le hasard
-                               _les écrants de victoire et défaite
+                               _les écrans de victoire et défaite
                                _L'affichage
     
 
